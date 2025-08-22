@@ -1,6 +1,0 @@
-Danh sach san pham: 
-SP01;Keo;0;20;1
-SP02;Banh;0;15;1
-SP03;Sua;0;10;2
-San pham duoc tim: 
-SP01;Keo;0;20;1

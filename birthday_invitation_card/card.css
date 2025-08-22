@@ -1,2 +1,0 @@
-#card { position: absolute; top: 0; left: -200%; opacity: 0; transition: all 2s; }
-.card-show { left: 0 !important; opacity: 1 !important; }

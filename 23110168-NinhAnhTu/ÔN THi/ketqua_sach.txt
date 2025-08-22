@@ -1,3 +1,0 @@
-MaSach;TheLoai;Gia;XepHang
-S001;TieuThuyet;25.50;1
-S003;TieuThuyet;22.75;2

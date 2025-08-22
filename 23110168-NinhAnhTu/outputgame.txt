@@ -1,4 +1,0 @@
-Tong thoi gian toi da: 32 phut
-Chi tiet cach chon tro choi:
-- Tro choi 1 (Chi phi: 2K, Thoi gian: 2 phut): Chon 1 lan, tong thoi gian 2 phut
-- Tro choi 2 (Chi phi: 3K, Thoi gian: 5 phut): Chon 6 lan, tong thoi gian 30 phut
