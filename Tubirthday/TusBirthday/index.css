@@ -1,0 +1,18 @@
+.parent{
+    position: relative;
+}
+
+.above-fold{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+body {
+    background-image: url("https://i.pinimg.com/originals/cb/dc/4a/cbdc4a8f563deed261d7d12159d6e274.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  

@@ -1,0 +1,43 @@
+    #card {
+        margin: 8%;
+        position: absolute;
+        height: auto;
+        width: 350px;
+        border-radius: 10px;
+        background-color: white;
+        background-image: url("https://image.freepik.com/free-vector/open-gift-box-with-heart-shape-confetti-burst-explosion-3d-valentines-day-romantic-gift_165143-438.jpg");
+        background-size: 50vh, 70vh;
+        box-shadow: 0px 0px 20px red;
+        transform: rotate(5deg);
+        top: 0px;
+        opacity: 0;
+        left: -200%;
+    }
+
+    .honey {
+        margin: auto;
+        padding: 5%;
+        display: block;
+        border-radius: 50%;
+        box-shadow: 0 4px 8px 0 red;
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    h4 {
+        text-align: center;
+        -webkit-text-fill-color: #000;
+        -webkit-background-clip: text;
+        background-image: url("https://www.freepik.com/free-vector/big-flame_25452294.htm#fromView=image_search_similar&page=1&position=0&uuid=5e3635b2-587d-45f0-ac2f-b8b59904b867&query=Fire+%C4%91%E1%BB%93+h%E1%BB%8Da");
+        font-family: 'Allura', cursive;
+        padding: -2%;
+        font-size: 19px;
+        overflow: hidden;
+    }
+
+    .card-show{
+        opacity: 1 !important;
+        left: 0 !important;
+        transition: all 2s;
+    }

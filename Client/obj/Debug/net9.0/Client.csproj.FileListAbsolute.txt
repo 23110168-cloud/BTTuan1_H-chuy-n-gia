@@ -1,0 +1,14 @@
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\bin\Debug\net9.0\Client.exe
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\bin\Debug\net9.0\Client.deps.json
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\bin\Debug\net9.0\Client.runtimeconfig.json
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\bin\Debug\net9.0\Client.dll
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\bin\Debug\net9.0\Client.pdb
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\Client.GeneratedMSBuildEditorConfig.editorconfig
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\Client.AssemblyInfoInputs.cache
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\Client.AssemblyInfo.cs
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\Client.csproj.CoreCompileInputs.cache
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\Client.dll
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\refint\Client.dll
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\Client.pdb
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\Client.genruntimeconfig.cache
+D:\HK2 24-25\Kĩ thuật lập trình\Code\Client\obj\Debug\net9.0\ref\Client.dll

@@ -1,0 +1,20 @@
+.present-box > .side {
+  background: repeating-linear-gradient(45deg, #ff69b4, #ff69b4 20px, #fff0f5 20px, #fff0f5 40px);
+}
+.present-box .present > .img-wrap {
+  width: 200px;
+  height: 200px; /* nếu video cao hơn, tăng lên 250-300px */
+  align-self: center;
+  transition: transform 400ms;
+  opacity: 0;
+  transform: translateZ(-80px);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.present-box .present > .img-wrap video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+

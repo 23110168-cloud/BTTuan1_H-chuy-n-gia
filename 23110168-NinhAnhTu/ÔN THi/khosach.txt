@@ -1,0 +1,4 @@
+S001;TieuThuyet;25.50;Nguoi Giau Nhat Thanh Babylon  
+S002;KhoaHoc;30.00;Vu Tru  
+S003;TieuThuyet;22.75;Nhung Nguoi Khon Kho  
+S004;LichSu;28.50;Su Tich Dat Viet  

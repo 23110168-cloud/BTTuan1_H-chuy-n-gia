@@ -1,0 +1,767 @@
+
+
+
+-- Bảng KhoHang
+CREATE TABLE KhoHang (
+    MaKhoHang NVARCHAR(10) CONSTRAINT PK_KhoHang PRIMARY KEY,
+    TenKhoHang NVARCHAR(100) NOT NULL,
+    DiaChi NVARCHAR(255) NOT NULL
+);
+GO
+
+-- Bảng LoaiSanPham
+CREATE TABLE LoaiSanPham (
+    MaLoaiSP NVARCHAR(10) CONSTRAINT PK_LoaiSanPham PRIMARY KEY,
+    TenLoaiSP NVARCHAR(100) NOT NULL
+);
+GO
+
+-- Bảng SanPham
+CREATE TABLE SanPham (
+    MaSP NVARCHAR(10) CONSTRAINT PK_SanPham PRIMARY KEY,
+    TenSP NVARCHAR(100) NOT NULL,
+    Gia DECIMAL(10,2) NOT NULL CHECK (Gia > 0),
+    SoLuong INT NOT NULL CHECK (SoLuong >= 0),
+    MaLoaiSP NVARCHAR(10),
+    MaKhoHang NVARCHAR(10),
+    CONSTRAINT FK_SanPham_LSP FOREIGN KEY (MaLoaiSP) REFERENCES LoaiSanPham(MaLoaiSP),
+    CONSTRAINT FK_SanPham_Kho FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang)
+);
+GO
+
+-- Bảng PhanCong
+CREATE TABLE PhanCong (
+    MaPhanCong NVARCHAR(10) CONSTRAINT PK_PhanCong PRIMARY KEY,
+    NgayPhanCong NVARCHAR(10) NOT NULL
+);
+GO
+
+
+-- Bảng NhanVien
+CREATE TABLE NhanVien (
+    MaNV NVARCHAR(10) CONSTRAINT PK_NhanVien PRIMARY KEY,
+    Ho NVARCHAR(50) NOT NULL,
+    Ten NVARCHAR(50) NOT NULL,
+    DiaChi NVARCHAR(255) NOT NULL,
+    SoDT NVARCHAR(15) NOT NULL UNIQUE,
+    SoNgayLam INT NOT NULL CHECK (SoNgayLam >= 0),
+	LuongMotNgay DECIMAL(10,2) NOT NULL CHECK (LuongMotNgay > 0),
+    Luong DECIMAL(10,2) NOT NULL CHECK (Luong > 0),
+    TaiKhoan NVARCHAR(50) UNIQUE NOT NULL,
+    MatKhau NVARCHAR(255) NOT NULL,
+    ChucVu NVARCHAR(50) NOT NULL CHECK (ChucVu IN ('QuanLy', 'NhanVien')),
+    MaPhanCong NVARCHAR(10) NOT NULL,
+    CONSTRAINT FK_NhanVien_PhanCong FOREIGN KEY (MaPhanCong) REFERENCES PhanCong(MaPhanCong) 
+);
+GO
+
+-- Bảng HoaDon
+CREATE TABLE HoaDon (
+    MaHD NVARCHAR(10) CONSTRAINT PK_HoaDon PRIMARY KEY,
+    NgayLap DATE NOT NULL CHECK (NgayLap <= GETDATE()),
+    TongTien DECIMAL(15,2) NOT NULL CHECK (TongTien >= 0),
+    MaNV NVARCHAR(10) NOT NULL,
+    CONSTRAINT FK_HoaDon_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV)
+);
+GO
+
+-- Bảng ChiTietHoaDon
+CREATE TABLE ChiTietHoaDon (
+    MaHD NVARCHAR(10),
+    MaSP NVARCHAR(10),
+    SoLuong INT NOT NULL CHECK (SoLuong > 0),
+    CONSTRAINT PK_ChiTietHoaDon PRIMARY KEY (MaHD, MaSP),
+    CONSTRAINT FK_ChiTietHoaDon_HoaDon FOREIGN KEY (MaHD) REFERENCES HoaDon(MaHD),
+    CONSTRAINT FK_ChiTietHoaDon_SanPham FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP)
+);
+GO
+
+-- Bảng PhuongThucThanhToan
+CREATE TABLE PhuongThucThanhToan (
+    MaPTTT NVARCHAR(10) CONSTRAINT PK_PhuongThucThanhToan PRIMARY KEY,
+    TenPTTT NVARCHAR(100) NOT NULL
+);
+GO
+
+-- Bảng KhachHang
+CREATE TABLE KhachHang (
+    MaKH NVARCHAR(10) CONSTRAINT PK_KhachHang PRIMARY KEY,
+    Ho NVARCHAR(50) NOT NULL,
+    Ten NVARCHAR(50) NOT NULL,
+    SoDT NVARCHAR(15) NOT NULL UNIQUE
+);
+GO
+
+-- Bảng ThanhToanHoaDon
+CREATE TABLE ThanhToanHoaDon (
+    MaHD NVARCHAR(10),
+    MaKH NVARCHAR(10),
+    MaPTTT NVARCHAR(10),
+    TrangThaiThanhToan NVARCHAR(50) NOT NULL CHECK (TrangThaiThanhToan IN ('Chua Thanh Toan', 'Da Thanh Toan')),
+    CONSTRAINT PK_ThanhToanHoaDon PRIMARY KEY (MaHD, MaKH, MaPTTT),
+    CONSTRAINT FK_ThanhToanHoaDon_HoaDon FOREIGN KEY (MaHD) REFERENCES HoaDon(MaHD),
+    CONSTRAINT FK_ThanhToanHoaDon_KhachHang FOREIGN KEY (MaKH) REFERENCES KhachHang(MaKH),
+    CONSTRAINT FK_ThanhToanHoaDon_PTTT FOREIGN KEY (MaPTTT) REFERENCES PhuongThucThanhToan(MaPTTT)
+);
+GO
+
+-- Chèn dữ liệu vào bảng KhoHang
+INSERT INTO KhoHang (MaKhoHang, TenKhoHang, DiaChi) VALUES
+('KH01', 'Kho Hàng Hà Nội', '123 Đường Láng, Hà Nội'),
+('KH02', 'Kho Hàng Đà Nẵng', '456 Nguyễn Văn Linh, Đà Nẵng'),
+('KH03', 'Kho Hàng TP.HCM', '789 Lê Lợi, TP.HCM');
+GO
+
+-- Chèn dữ liệu vào bảng LoaiSanPham
+INSERT INTO LoaiSanPham (MaLoaiSP, TenLoaiSP) VALUES
+('LSP01', 'Điện thoại'),
+('LSP02', 'Phụ kiện');
+GO
+
+-- Chèn dữ liệu vào bảng SanPham
+INSERT INTO SanPham (MaSP, TenSP, Gia, SoLuong, MaLoaiSP, MaKhoHang) VALUES
+('SP01', 'iPhone 15 Pro Max', 33000000, 50, 'LSP01', 'KH01'),
+('SP02', 'Samsung Galaxy S23 Ultra', 28000000, 40, 'LSP01', 'KH02'),
+('SP03', 'Xiaomi 13 Pro', 18000000, 30, 'LSP01', 'KH03'),
+('SP04', 'Oppo Find X5 Pro', 22000000, 20, 'LSP01', 'KH01'),
+('SP05', 'AirPods Pro 2', 5500000, 100, 'LSP02', 'KH01'),
+('SP06', 'Samsung Galaxy Buds 2 Pro', 4500000, 80, 'LSP02', 'KH02'),
+('SP07', 'Cáp sạc nhanh USB-C 20W', 350000, 200, 'LSP02', 'KH03'),
+('SP08', 'Ốp lưng iPhone 15', 500000, 150, 'LSP02', 'KH01');
+GO
+
+-- Chèn dữ liệu vào bảng PhanCong
+INSERT INTO PhanCong (MaPhanCong, NgayPhanCong) VALUES
+('PC01', 'Thu2'),
+('PC02', 'Thu3'),
+('PC03', 'Thu4'),
+('PC04', 'Thu5'),
+('PC05', 'Thu6'),
+('PC06', 'Thu7'),
+('PC07', 'ChuNhat');
+GO
+
+-- Chèn dữ liệu vào bảng NhanVien
+INSERT INTO NhanVien (MaNV, Ho, Ten, DiaChi, SoDT, SoNgayLam, LuongMotNgay, Luong, TaiKhoan, MatKhau, ChucVu, MaPhanCong) VALUES
+('NV01', 'Nguyễn', 'Văn A', 'Hà Nội', '0123456789', 10, 100000, 1000000, 'admin', '12345', 'QuanLy', 'PC01'),
+('NV02', 'Trần', 'Thị B', 'Đà Nẵng', '0987654321', 20, 150000, 3000000, 'tranthib', 'password2', 'NhanVien', 'PC02'),
+('NV03', 'Lê', 'Văn C', 'TP.HCM', '0901234567', 25, 110000, 2750000, 'levanc', 'password3', 'NhanVien', 'PC03'),
+('NV04', 'Vũ', 'Quang D', 'Hà Nội', '0912345678', 15, 120000, 1800000, 'vuquangd', 'password4', 'NhanVien', 'PC04'),
+('NV05', 'Hoàng', 'Minh E', 'Đà Nẵng', '0923456789', 18, 130000, 2340000, 'hoangminhe', 'password5', 'NhanVien', 'PC05'),
+('NV06', 'Phạm', 'Anh F', 'TP.HCM', '0934567890', 22, 140000, 3080000, 'phamanhf', 'password6', 'NhanVien', 'PC06'),
+('NV07', 'Trịnh', 'Hải G', 'Hà Nội', '0945678901', 20, 135000, 2700000, 'trinhhaig', 'password7', 'NhanVien', 'PC07');
+GO
+
+-- Chèn dữ liệu vào bảng HoaDon
+INSERT INTO HoaDon (MaHD, NgayLap, TongTien, MaNV) VALUES
+('HD01', '2024-03-05', 49500000, 'NV01'),
+('HD02', '2024-03-06', 37000000, 'NV02'),
+('HD03', '2024-03-07', 1300000, 'NV03');
+GO
+
+-- Chèn dữ liệu vào bảng ChiTietHoaDon
+INSERT INTO ChiTietHoaDon (MaHD, MaSP, SoLuong) VALUES
+('HD01', 'SP01', 1),  
+('HD01', 'SP05', 3),  
+('HD02', 'SP02', 1),  
+('HD02', 'SP06', 2),  
+('HD03', 'SP07', 2),  
+('HD03', 'SP08', 1);  
+GO
+
+-- Chèn dữ liệu vào bảng PhuongThucThanhToan
+INSERT INTO PhuongThucThanhToan (MaPTTT, TenPTTT) VALUES
+('PT01', 'Tiền mặt'),
+('PT02', 'Chuyển khoản'),
+('PT03', 'Thẻ tín dụng');
+GO
+
+-- Chèn dữ liệu vào bảng KhachHang
+INSERT INTO KhachHang (MaKH, Ho, Ten, SoDT) VALUES
+('KH01', 'Phạm', 'Văn D', '0911223344'),
+('KH02', 'Đỗ', 'Thị E', '0933445566'),
+('KH03', 'Bùi', 'Văn F', '0955667788'),
+('KH04', 'Ngô', 'Lan H', '0966778899'),
+('KH05', 'Dương', 'Bình I', '0977889900'),
+('KH06', 'Tạ', 'Hữu J', '0988990011'),
+('KH07', 'Lương', 'Quốc K', '0999001122');
+GO
+
+-- Chèn dữ liệu vào bảng ThanhToanHoaDon
+INSERT INTO ThanhToanHoaDon (MaHD, MaKH, MaPTTT, TrangThaiThanhToan) VALUES
+('HD01', 'KH01', 'PT02', 'Da Thanh Toan'),
+('HD02', 'KH02', 'PT03', 'Chua Thanh Toan'),
+('HD03', 'KH03', 'PT01', 'Da Thanh Toan');
+GO
+bỏ hết dấu câu đi
+
+
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa kho hàng 
+--===================================================
+-- Thêm KhoHang
+CREATE PROCEDURE spThemKhoHang
+    @MaKhoHang NVARCHAR(10),
+    @TenKhoHang NVARCHAR(100),
+    @DiaChi NVARCHAR(255)
+AS
+BEGIN
+    INSERT INTO KhoHang (MaKhoHang, TenKhoHang, DiaChi)
+    VALUES (@MaKhoHang, @TenKhoHang, @DiaChi);
+END;
+GO
+
+-- Cập nhật KhoHang
+CREATE PROCEDURE spCapNhatKhoHang
+    @MaKhoHang NVARCHAR(10),
+    @TenKhoHang NVARCHAR(100),
+    @DiaChi NVARCHAR(255)
+AS
+BEGIN
+    UPDATE KhoHang
+    SET TenKhoHang = @TenKhoHang, DiaChi = @DiaChi
+    WHERE MaKhoHang = @MaKhoHang;
+END;
+GO
+
+-- Xóa KhoHang
+CREATE PROCEDURE spXoaKhoHang
+    @MaKhoHang NVARCHAR(10)
+AS
+BEGIN
+    DELETE FROM KhoHang WHERE MaKhoHang = @MaKhoHang;
+END;
+GO
+
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa Phân công 
+--===================================================
+-- Thêm PhanCong
+CREATE PROCEDURE spThemPhanCong
+    @MaPhanCong NVARCHAR(10),
+    @NgayPhanCong NVARCHAR(10)
+AS
+BEGIN
+    INSERT INTO PhanCong (MaPhanCong, NgayPhanCong)
+    VALUES (@MaPhanCong, @NgayPhanCong);
+END;
+GO
+
+-- Cập nhật PhanCong
+CREATE PROCEDURE spCapNhatPhanCong
+    @MaPhanCong NVARCHAR(10),
+    @NgayPhanCong NVARCHAR(10)
+AS
+BEGIN
+    UPDATE PhanCong
+    SET NgayPhanCong = @NgayPhanCong
+    WHERE MaPhanCong = @MaPhanCong;
+END;
+GO
+
+-- Xóa PhanCong
+CREATE PROCEDURE spXoaPhanCong
+    @MaPhanCong NVARCHAR(10)
+AS
+BEGIN
+    DELETE FROM PhanCong WHERE MaPhanCong = @MaPhanCong;
+END;
+GO
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa PhuongThucThanhToan
+--===================================================
+-- Thêm PhuongThucThanhToan
+CREATE PROCEDURE spThemPhuongThucThanhToan
+    @MaPTTT NVARCHAR(10),
+    @TenPTTT NVARCHAR(100)
+AS
+BEGIN
+    INSERT INTO PhuongThucThanhToan (MaPTTT, TenPTTT)
+    VALUES (@MaPTTT, @TenPTTT);
+END;
+GO
+
+-- Cập nhật PhuongThucThanhToan
+CREATE PROCEDURE spCapNhatPhuongThucThanhToan
+    @MaPTTT NVARCHAR(10),
+    @TenPTTT NVARCHAR(100)
+AS
+BEGIN
+    UPDATE PhuongThucThanhToan
+    SET TenPTTT = @TenPTTT
+    WHERE MaPTTT = @MaPTTT;
+END;
+GO
+
+-- Xóa PhuongThucThanhToan
+CREATE PROCEDURE spXoaPhuongThucThanhToan
+    @MaPTTT NVARCHAR(10)
+AS
+BEGIN
+    DELETE FROM PhuongThucThanhToan WHERE MaPTTT = @MaPTTT;
+END;
+GO
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa LoaiSanPham
+--===================================================
+--Them
+CREATE PROCEDURE spThemLoaiSanPham
+    @MaLoaiSP NVARCHAR(10),
+    @TenLoaiSP NVARCHAR(100)
+AS
+BEGIN
+    INSERT INTO LoaiSanPham (MaLoaiSP, TenLoaiSP)
+    VALUES (@MaLoaiSP, @TenLoaiSP);
+END;
+GO
+
+--Cap Nhat
+CREATE PROCEDURE spCapNhatLoaiSanPham
+    @MaLoaiSP NVARCHAR(10),
+    @TenLoaiSP NVARCHAR(100)
+AS
+BEGIN
+    -- Cập nhật thông tin loại sản phẩm
+    UPDATE LoaiSanPham
+    SET TenLoaiSP = @TenLoaiSP
+    WHERE MaLoaiSP = @MaLoaiSP;
+END
+GO
+
+--Xoa
+CREATE PROCEDURE spXoaLoaiSanPham
+    @MaLoaiSP NVARCHAR(10)
+AS
+BEGIN
+    -- Xóa loại sản phẩm
+    DELETE FROM LoaiSanPham WHERE MaLoaiSP = @MaLoaiSP;
+END
+GO
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa SanPham
+--===================================================
+--Them
+CREATE PROCEDURE spThemSanPham
+    @MaSP NVARCHAR(10),
+    @TenSP NVARCHAR(100),
+    @Gia DECIMAL(10,2),
+    @SoLuong INT,
+    @MaLoaiSP NVARCHAR(10),
+    @MaKhoHang NVARCHAR(10)
+AS
+BEGIN
+    -- Thêm sản phẩm vào bảng SanPham
+    INSERT INTO SanPham (MaSP, TenSP, Gia, SoLuong, MaLoaiSP, MaKhoHang)
+    VALUES (@MaSP, @TenSP, @Gia, @SoLuong, @MaLoaiSP, @MaKhoHang);
+END;
+GO 
+
+--Cap Nhat
+CREATE PROCEDURE spCapNhatSanPham
+    @MaSP NVARCHAR(10),
+    @TenSP NVARCHAR(100),
+    @Gia DECIMAL(10,2),
+    @SoLuong INT,
+    @MaLoaiSP NVARCHAR(10),
+    @MaKhoHang NVARCHAR(10)
+AS
+BEGIN
+    -- Cập nhật thông tin sản phẩm
+    UPDATE SanPham
+    SET TenSP = @TenSP,
+        Gia = @Gia,
+        SoLuong = @SoLuong,
+        MaLoaiSP = @MaLoaiSP,
+        MaKhoHang = @MaKhoHang
+    WHERE MaSP = @MaSP;
+END;
+GO
+
+--Xoa
+CREATE PROCEDURE spXoaSanPham
+    @MaSP NVARCHAR(10)
+AS
+BEGIN
+    -- Xóa sản phẩm
+    DELETE FROM SanPham WHERE MaSP = @MaSP;
+END;
+GO
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa NhanVien
+--===================================================
+--Them
+CREATE PROCEDURE spThemNhanVien
+    @MaNV NVARCHAR(10),
+    @Ho NVARCHAR(50),
+    @Ten NVARCHAR(50),
+    @DiaChi NVARCHAR(255),
+    @SoDT NVARCHAR(15),
+    @SoNgayLam INT,
+    @LuongMotNgay DECIMAL(10,2),
+    @TaiKhoan NVARCHAR(50),
+    @MatKhau NVARCHAR(256),
+    @ChucVu NVARCHAR(50),
+    @MaPhanCong NVARCHAR(10)
+AS
+BEGIN
+    DECLARE @Luong DECIMAL(10,2);
+    SET @Luong = @SoNgayLam * @LuongMotNgay;
+
+    -- Thêm nhân viên mới
+    INSERT INTO NhanVien (MaNV, Ho, Ten, DiaChi, SoDT, SoNgayLam, LuongMotNgay, Luong, TaiKhoan, MatKhau, ChucVu, MaPhanCong)
+    VALUES (@MaNV, @Ho, @Ten, @DiaChi, @SoDT, @SoNgayLam, @LuongMotNgay, @Luong, @TaiKhoan, @MatKhau, @ChucVu, @MaPhanCong);
+END;
+GO
+
+--Cap Nhat 
+CREATE PROCEDURE spCapNhatNhanVien
+    @MaNV NVARCHAR(10),
+    @Ho NVARCHAR(50),
+    @Ten NVARCHAR(50),
+    @DiaChi NVARCHAR(255),
+    @SoDT NVARCHAR(15),
+    @SoNgayLam INT,
+    @LuongMotNgay DECIMAL(10,2),
+    @TaiKhoan NVARCHAR(50),
+    @MatKhau NVARCHAR(256),
+    @ChucVu NVARCHAR(50),
+    @MaPhanCong NVARCHAR(10)
+AS
+BEGIN
+    DECLARE @Luong DECIMAL(10,2);
+    SET @Luong = @SoNgayLam * @LuongMotNgay;
+    -- Cập nhật thông tin nhân viên
+    UPDATE NhanVien
+    SET Ho = @Ho, Ten = @Ten, DiaChi = @DiaChi, SoDT = @SoDT,
+        SoNgayLam = @SoNgayLam, LuongMotNgay = @LuongMotNgay, Luong = @Luong, 
+        TaiKhoan = @TaiKhoan, MatKhau = @MatKhau, ChucVu = @ChucVu, 
+        MaPhanCong = @MaPhanCong
+    WHERE MaNV = @MaNV;
+END;
+GO
+
+
+--Xoa
+CREATE PROCEDURE spXoaNhanVien
+    @MaNV NVARCHAR(10)
+AS
+BEGIN
+    -- Xóa nhân viên
+    DELETE FROM NhanVien WHERE MaNV = @MaNV;
+END;
+GO
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa HoaDon
+--===================================================
+--Them
+CREATE PROCEDURE spThemHoaDon
+    @MaHD NVARCHAR(10),
+    @NgayLap DATE,
+    @TongTien DECIMAL(15,2),
+    @MaNV NVARCHAR(10)
+AS
+BEGIN
+    -- Thêm hóa đơn mới
+    INSERT INTO HoaDon (MaHD, NgayLap, TongTien, MaNV)
+    VALUES (@MaHD, @NgayLap, @TongTien, @MaNV);
+END;
+GO
+
+--Cap Nhat
+CREATE PROCEDURE spCapNhatHoaDon
+    @MaHD NVARCHAR(10),
+    @NgayLap DATE,
+    @TongTien DECIMAL(15,2),
+    @MaNV NVARCHAR(10)
+AS
+BEGIN
+    -- Cập nhật hóa đơn
+    UPDATE HoaDon
+    SET NgayLap = @NgayLap, TongTien = @TongTien, MaNV = @MaNV
+    WHERE MaHD = @MaHD;
+END;
+GO
+
+--Xoa
+CREATE PROCEDURE spXoaHoaDon
+    @MaHD NVARCHAR(10)
+AS
+BEGIN
+    -- Xóa hóa đơn
+    DELETE FROM HoaDon WHERE MaHD = @MaHD;
+END;
+GO
+
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa ChiTietHoaDon
+--===================================================
+--Them 
+CREATE PROCEDURE spThemChiTietHoaDon
+    @MaHD NVARCHAR(10),
+    @MaSP NVARCHAR(10),
+    @SoLuong INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+    DECLARE @SoLuongTonKho INT, @Gia DECIMAL(15,2), @TongTien DECIMAL(15,2);
+
+    -- Kiểm tra số lượng tồn kho
+    SELECT @SoLuongTonKho = SoLuong, @Gia = Gia FROM SanPham WHERE MaSP = @MaSP;
+    IF @SoLuongTonKho < @SoLuong
+    BEGIN
+        ROLLBACK;
+        RAISERROR('Số lượng sản phẩm trong kho không đủ.', 16, 1);
+        RETURN;
+    END
+
+    -- Cập nhật số lượng trong kho
+    UPDATE SanPham
+    SET SoLuong = SoLuong - @SoLuong
+    WHERE MaSP = @MaSP;
+
+    -- Thêm chi tiết hóa đơn
+    INSERT INTO ChiTietHoaDon (MaHD, MaSP, SoLuong)
+    VALUES (@MaHD, @MaSP, @SoLuong);
+
+    -- Tính lại tổng tiền hóa đơn
+    SELECT @TongTien = SUM(CTHD.SoLuong * SP.Gia)
+    FROM ChiTietHoaDon CTHD
+    JOIN SanPham SP ON CTHD.MaSP = SP.MaSP
+    WHERE CTHD.MaHD = @MaHD;
+
+    -- Cập nhật tổng tiền hóa đơn
+    UPDATE HoaDon
+    SET TongTien = ISNULL(@TongTien, 0)
+    WHERE MaHD = @MaHD;
+
+    COMMIT;
+END;
+GO
+
+
+-- Cap Nhat
+CREATE PROCEDURE spCapNhatChiTietHoaDon
+    @MaHD NVARCHAR(10),
+    @MaSP NVARCHAR(10),
+    @SoLuongMoi INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+
+    DECLARE @SoLuongCu INT, @SoLuongTonKho INT, @TongTien DECIMAL(15,2);
+
+    -- Lấy số lượng cũ trong hóa đơn và số lượng tồn kho
+    SELECT @SoLuongCu = CTHD.SoLuong, @SoLuongTonKho = SP.SoLuong
+    FROM ChiTietHoaDon CTHD
+    JOIN SanPham SP ON CTHD.MaSP = SP.MaSP
+    WHERE CTHD.MaHD = @MaHD AND CTHD.MaSP = @MaSP;
+
+    -- Kiểm tra số lượng tồn kho có đủ không
+    IF (@SoLuongTonKho + @SoLuongCu) < @SoLuongMoi
+    BEGIN
+        ROLLBACK;
+        RAISERROR('Số lượng sản phẩm trong kho không đủ.', 16, 1);
+        RETURN;
+    END
+
+    -- Cập nhật số lượng trong kho
+    UPDATE SanPham
+    SET SoLuong = SoLuong + @SoLuongCu - @SoLuongMoi
+    WHERE MaSP = @MaSP;
+
+    -- Cập nhật số lượng trong chi tiết hóa đơn
+    UPDATE ChiTietHoaDon
+    SET SoLuong = @SoLuongMoi
+    WHERE MaHD = @MaHD AND MaSP = @MaSP;
+
+    -- Tính tổng tiền mới của hóa đơn
+    SELECT @TongTien = SUM(CTHD.SoLuong * SP.Gia)
+    FROM ChiTietHoaDon CTHD
+    JOIN SanPham SP ON CTHD.MaSP = SP.MaSP
+    WHERE CTHD.MaHD = @MaHD;
+
+    -- Cập nhật tổng tiền hóa đơn
+    UPDATE HoaDon
+    SET TongTien = ISNULL(@TongTien, 0)
+    WHERE MaHD = @MaHD;
+
+    COMMIT;
+END;
+GO
+
+
+--Xoa
+CREATE PROCEDURE spXoaChiTietHoaDon
+    @MaHD NVARCHAR(10),
+    @MaSP NVARCHAR(10)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+
+    DECLARE @SoLuong INT, @TongTien DECIMAL(15,2);
+
+    -- Lấy số lượng sản phẩm trong hóa đơn trước khi xóa
+    SELECT @SoLuong = SoLuong FROM ChiTietHoaDon WHERE MaHD = @MaHD AND MaSP = @MaSP;
+    
+    -- Nếu không tìm thấy sản phẩm trong hóa đơn, báo lỗi
+    IF @SoLuong IS NULL
+    BEGIN
+        ROLLBACK;
+        RAISERROR('Sản phẩm không tồn tại trong hóa đơn.', 16, 1);
+        RETURN;
+    END
+
+    -- Cộng lại số lượng vào kho
+    UPDATE SanPham
+    SET SoLuong = SoLuong + @SoLuong
+    WHERE MaSP = @MaSP;
+
+    -- Xóa chi tiết hóa đơn
+    DELETE FROM ChiTietHoaDon WHERE MaHD = @MaHD AND MaSP = @MaSP;
+
+    -- Tính lại tổng tiền hóa đơn
+    SELECT @TongTien = SUM(CTHD.SoLuong * SP.Gia)
+    FROM ChiTietHoaDon CTHD
+    JOIN SanPham SP ON CTHD.MaSP = SP.MaSP
+    WHERE CTHD.MaHD = @MaHD;
+
+    -- Cập nhật tổng tiền hóa đơn
+    UPDATE HoaDon
+    SET TongTien = ISNULL(@TongTien, 0)
+    WHERE MaHD = @MaHD;
+
+    COMMIT;
+END;
+GO
+
+--===================================================
+--PROCEDURE Thêm, cập nhật, xóa KhachHang
+--===================================================
+--Them
+CREATE PROCEDURE spThemKhachHang
+    @MaKH NVARCHAR(10),
+    @Ho NVARCHAR(50),
+    @Ten NVARCHAR(50),
+    @SoDT NVARCHAR(15)
+AS
+BEGIN
+    -- Thêm khách hàng
+    INSERT INTO KhachHang (MaKH, Ho, Ten, SoDT)
+    VALUES (@MaKH, @Ho, @Ten, @SoDT);
+END;
+GO
+
+--Cap Nhat
+CREATE PROCEDURE spCapNhatKhachHang
+    @MaKH NVARCHAR(10),
+    @Ho NVARCHAR(50),
+    @Ten NVARCHAR(50),
+    @SoDT NVARCHAR(15)
+AS
+BEGIN
+    -- Cập nhật thông tin khách hàng
+    UPDATE KhachHang
+    SET Ho = @Ho, Ten = @Ten, SoDT = @SoDT
+    WHERE MaKH = @MaKH;
+END;
+GO
+
+--Xoa
+CREATE PROCEDURE spXoaKhachHang
+    @MaKH NVARCHAR(10)
+AS
+BEGIN
+    -- Xóa khách hàng
+    DELETE FROM KhachHang WHERE MaKH = @MaKH;
+END;
+GO
+
+--===================================================
+--PROCEDURE thêm, cập nhật, xóa ThanhToanHoaDon
+--===================================================
+--Them
+CREATE PROCEDURE spThemThanhToanHoaDon
+    @MaHD NVARCHAR(10),
+    @MaKH NVARCHAR(10),
+    @MaPTTT NVARCHAR(10),
+    @TrangThaiThanhToan NVARCHAR(50)
+AS
+BEGIN
+
+    -- Kiểm tra tính hợp lệ của Trạng thái thanh toán
+    IF @TrangThaiThanhToan NOT IN ('Chua Thanh Toan', 'Da Thanh Toan')
+    BEGIN
+        PRINT N'Trang thái thanh toán không hợp lệ!';
+        RETURN;
+    END
+
+    -- Chèn dữ liệu vào bảng ThanhToanHoaDon
+    BEGIN TRY
+        INSERT INTO ThanhToanHoaDon (MaHD, MaKH, MaPTTT, TrangThaiThanhToan)
+        VALUES (@MaHD, @MaKH, @MaPTTT, @TrangThaiThanhToan);
+
+        PRINT N'Thêm thanh toán hóa đơn thành công!';
+    END TRY
+    BEGIN CATCH
+        PRINT N'Lỗi khi thêm thanh toán hóa đơn: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+--Cap Nhat
+CREATE PROCEDURE spCapNhatThanhToanHoaDon
+    @MaHD NVARCHAR(10),
+    @MaKH NVARCHAR(10),
+    @MaPTTT NVARCHAR(10),
+    @TrangThaiThanhToan NVARCHAR(50)
+AS
+BEGIN
+    -- Cập nhật trạng thái thanh toán
+    UPDATE ThanhToanHoaDon
+    SET TrangThaiThanhToan = @TrangThaiThanhToan
+    WHERE MaHD = @MaHD AND MaKH = @MaKH AND MaPTTT = @MaPTTT;
+END;
+GO
+
+--Xoa
+CREATE PROCEDURE spXoaThanhToanHoaDon
+    @MaHD NVARCHAR(10),
+    @MaKH NVARCHAR(10),
+    @MaPTTT NVARCHAR(10)
+AS
+BEGIN
+    -- Xóa thanh toán hóa đơn
+    DELETE FROM ThanhToanHoaDon WHERE MaHD = @MaHD AND MaKH = @MaKH AND MaPTTT = @MaPTTT;
+END;
+GO
+--===================================================
+--PROCEDURE kiểm tra tai khoan va mat khau
+--===================================================
+CREATE PROCEDURE spKiemTraDangNhap
+    @TaiKhoan NVARCHAR(50),
+    @MatKhau NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM NhanVien WHERE TaiKhoan = @TaiKhoan AND MatKhau = @MatKhau)
+        SELECT 1 AS KetQua; -- Đăng nhập thành công
+    ELSE
+        SELECT 0 AS KetQua; -- Đăng nhập thất bại
+END;
+GO
+
+
+
+

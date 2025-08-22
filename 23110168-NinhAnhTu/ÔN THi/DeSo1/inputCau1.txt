@@ -1,0 +1,5 @@
+HS01 Nguyen_Van_A 9 8 7 8
+HS02 Tran_Thi_B 6 7 6 7
+HS03 Le_Van_C 10 9 9 10
+HS04 Pham_Thi_D 5 4 6 5
+HS05 Hoang_Van_E 7 7 7 8
